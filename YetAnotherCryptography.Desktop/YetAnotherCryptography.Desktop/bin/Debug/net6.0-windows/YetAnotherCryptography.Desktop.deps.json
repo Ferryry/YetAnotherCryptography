@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "YetAnotherCryptography.Desktop/1.0.0": {
+        "dependencies": {
+          "YetAnotherCryptography.DLL": "1.0.0"
+        },
+        "runtime": {
+          "YetAnotherCryptography.Desktop.dll": {}
+        }
+      },
+      "YetAnotherCryptography.DLL/1.0.0": {
+        "runtime": {
+          "YetAnotherCryptography.DLL.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "YetAnotherCryptography.Desktop/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "YetAnotherCryptography.DLL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
