@@ -11,28 +11,34 @@ namespace YetAnotherCryptography.Desktop
 
         private bool EncryptData(string file, string password)
         {
-            byte[] encryptedData = cryptography.Encrypt(File.ReadAllBytes(file), password.ToByte());
+            byte[] encryptedData = cryptography.Encrypt(
+                File.ReadAllBytes(file),
+                Hashing.GenerateHash(password.ToByte())
+            );
 
             if (encryptedData.Length == 0)
             {
                 return false;
             }
 
-            //File.WriteAllBytes(string.Format("{0}.yac", file), encryptedData);
+            File.WriteAllBytes(string.Format("{0}.yac", file), encryptedData);
 
             return true;
         }
 
         private bool DecryptData(string file, string password)
         {
-            byte[] decryptedData = cryptography.Decrypt(File.ReadAllBytes(file), password.ToByte());
+            byte[] decryptedData = cryptography.Decrypt(
+                File.ReadAllBytes(file),
+                Hashing.GenerateHash(password.ToByte())
+            );
 
             if (decryptedData.Length == 0)
             {
                 return false;
             }
 
-            //File.WriteAllBytes(string.Format("{0}", Path.GetFileNameWithoutExtension(file)), decryptedData);
+            File.WriteAllBytes(string.Format("{0}", Path.GetFileNameWithoutExtension(file)), decryptedData);
 
             return true;
         }
