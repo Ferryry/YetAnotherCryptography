@@ -9,6 +9,7 @@ namespace YetAnotherCryptography.Desktop
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
             {
                 fs.Write(data, 0, data.Length);
+                fs.Close();
             }
         }
 

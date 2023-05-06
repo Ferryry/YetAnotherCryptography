@@ -10,16 +10,7 @@ namespace YetAnotherCryptography.DLL
         {
             using(SHA512 sha512 = SHA512.Create())
             {
-                byte[] hashBytes = sha512.ComputeHash(data);
-                BigInteger hashValue = new BigInteger(hashBytes);
-                string hashString = hashValue.ToString("X");
-
-                while (hashString.Length < 256)
-                {
-                    hashString = "0" + hashString;
-                }
-
-                return hashBytes;
+                return sha512.ComputeHash(data);
             }
         }
     }

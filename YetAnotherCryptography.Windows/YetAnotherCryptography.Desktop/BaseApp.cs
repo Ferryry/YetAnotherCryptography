@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.Xml;
 using YetAnotherCryptography.DLL;
 
 namespace YetAnotherCryptography.Desktop
