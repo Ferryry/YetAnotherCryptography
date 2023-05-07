@@ -1,4 +1,5 @@
 ﻿using System;
+using YetAnotherCryptography.DLL;
 
 namespace YetAnotherCryptography
 {
@@ -10,7 +11,7 @@ namespace YetAnotherCryptography
 
         public void SetKey(byte[] key) => this.key = key;
 
-        public byte[] Encrypt(byte[] data) => this.Encrypt(data, new byte[0]);
+        public byte[] Encrypt(byte[] data) => this.Encrypt(data, "".ToByte());
 
         public byte[] Encrypt(byte[] data, byte[] key)
         {
@@ -24,7 +25,7 @@ namespace YetAnotherCryptography
             return result;
         }
 
-        public byte[] Decrypt(byte[] data) => this.Decrypt(data, new byte[0]);
+        public byte[] Decrypt(byte[] data) => this.Decrypt(data, "".ToByte());
 
         public byte[] Decrypt(byte[] data, byte[] key)
         {

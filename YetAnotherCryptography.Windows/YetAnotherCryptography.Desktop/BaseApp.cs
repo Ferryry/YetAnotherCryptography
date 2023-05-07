@@ -44,14 +44,14 @@ namespace YetAnotherCryptography.Desktop
 
         public void Run()
         {
-            if (manager.ActiveMode() == CryptographyMode.EXCEPTION)
+            if (manager.ActiveMode() == Keywords.Exception)
             {
                 CLIPrinter.Print("Gebe -h ein, um eine Liste aller zulässigen Befehle zu bekommen");
                 return;
             }
 
-            string source = manager.GetValueFromArg("src");
-            string password = manager.GetValueFromArg("pass");
+            string source = manager.GetParams("-s");
+            string password = manager.GetParams("-p") ?? string.Empty;
 
 #if DEBUG
             CLIPrinter.Print("Source: " + source);
@@ -60,22 +60,22 @@ namespace YetAnotherCryptography.Desktop
 
             switch(manager.ActiveMode())
             {
-                case CryptographyMode.SOURCE_ENCRYPT:
+                case Keywords.SourceEncrypt:
                     EncryptData(
                         source,
                         password
                     );
                     break;
 
-                case CryptographyMode.SOURCE_DECRYPT:
+                case Keywords.SourceDecrypt:
                     DecryptData(
                         source,
                         password
                     );
                     break;
 
-                case CryptographyMode.DIRECTORY_ENCRYPT:
-                    string[] decryptedSources = Directory.GetFiles(manager.GetValueFromArg("src"));
+                case Keywords.DirectoryEncrypt:
+                    string[] decryptedSources = Directory.GetFiles(manager.GetParams("-s"));
                     for (int i = 0; i < decryptedSources.Length; i++)
                     {
                         if (!EncryptData(decryptedSources[i], password))
@@ -88,8 +88,8 @@ namespace YetAnotherCryptography.Desktop
                     }
                     break;
 
-                case CryptographyMode.DIRECTORY_DECRYPT:
-                    string[] encryptedFiles = Directory.GetFiles(manager.GetValueFromArg("src"));
+                case Keywords.DirectoryDecrypt:
+                    string[] encryptedFiles = Directory.GetFiles(manager.GetParams("-s"));
                     for (int i = 0; i < encryptedFiles.Length; i++)
                     {
                         if(!DecryptData(encryptedFiles[i], password))
@@ -102,8 +102,8 @@ namespace YetAnotherCryptography.Desktop
                     }
                     break;
 
-                case CryptographyMode.HELP:
-                    byte[] data = cryptography.Decrypt(File.ReadAllBytes("help.yac"));
+                case Keywords.Help:
+                    byte[] data = cryptography.Decrypt(File.ReadAllBytes("help.yac"), "123".ToByte());
                     CLIPrinter.Print(Utilities.ToString(data));
                     break;
 

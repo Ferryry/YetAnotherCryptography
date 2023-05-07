@@ -2,116 +2,119 @@
 
 namespace YetAnotherCryptography.Desktop
 {
-    public enum CryptographyMode
+    public enum Keywords : int
     {
-        EXCEPTION,
-        HELP,
-        SOURCE_ENCRYPT,
-        SOURCE_DECRYPT,
-        DIRECTORY_ENCRYPT,
-        DIRECTORY_DECRYPT
+        Source = 0,
+        Password = 1,
+        SourceEncrypt = 2,
+        SourceDecrypt = 3,
+        DirectoryEncrypt = 4,
+        DirectoryDecrypt = 5,
+        Exception = 6,
+        Help = 7,
     }
 
     class CommandlineInputManager
     {
-        private string[] args;
-        private CryptographyMode activeMode;
-        private Dictionary<string, string> argsData;
+        private string[] givenParameters;
+        private Dictionary<string, Keywords> argumentsKeywordList;
+        private Dictionary<string, string> filteredParameters;
+        private Keywords activeMode;
 
-        public CryptographyMode ActiveMode()
+        public Keywords ActiveMode()
         {
             return activeMode;
         }
 
-        public byte[]? GetPassword()
+        public string? GetParams(string key)
         {
-            if (args[4].ToLower() == "p" && args[5].ToLower().Length > 0)
-            {
-                return args[5].ToByte();
-            }
-            return null;
-        }
-
-        public string GetValueFromArg(string arg)
-        {
-            return argsData.ContainsKey(arg) ? argsData[arg] : string.Empty;
+            return filteredParameters.ContainsKey(key) ? filteredParameters[key] : null;
         }
 
         private void CheckArgs()
         {
+            filteredParameters = new Dictionary<string, string>();
+
             try
             {
-                if (args.Length == 0)
+                if (givenParameters.Length == 0)
                 {
-                    activeMode = CryptographyMode.EXCEPTION;
+                    activeMode = Keywords.Exception;
                     return;
                 }
 
-                if (args.Length == 1 && args[0].ToLower() == "-h")
+                for (int i = 0; i < givenParameters.Length; i++)
                 {
-                    activeMode= CryptographyMode.HELP;
-                    return;
+
+                    if (givenParameters[i].ToLower() == "-h")
+                    {
+                        activeMode = Keywords.Help;
+                        return;
+                    }
+
+                    foreach (var item in argumentsKeywordList)
+                    {
+                        if (givenParameters[i].ToLower() == item.Key)
+                        {
+                            filteredParameters.Add(item.Key, givenParameters[i + 1]);
+                        }
+                    }
                 }
 
-                if (args.Length > 3 && args[3] == "p")
+                foreach (var item in filteredParameters)
                 {
-                    argsData.Add("pass", args[4]);
+                    if (item.Key == "-se")
+                    {
+                        activeMode = Keywords.SourceEncrypt;
+                        return;
+                    }
+
+                    if (item.Key == "-sd")
+                    {
+                        activeMode = Keywords.SourceDecrypt;
+                        return;
+                    }
+                    if (item.Key == "-de")
+                    {
+                        activeMode = Keywords.DirectoryEncrypt;
+                        return;
+                    }
+                    if (item.Key == "-dd")
+                    {
+                        activeMode = Keywords.DirectoryDecrypt;
+                        return;
+                    }
                 }
 
-                //s = source (file), -se = source encrypt
-                if (args[0].ToLower() == "s" && args[2].ToLower() == "-se")
-                {
-                    activeMode = CryptographyMode.SOURCE_ENCRYPT;
-                    argsData.Add("src", args[1]);
-                    return;
-                }
-
-                //s = source (file), -se = source decrypt
-                if (args[0].ToLower() == "s" && args[2].ToLower() == "-sd")
-                {
-                    activeMode = CryptographyMode.SOURCE_DECRYPT;
-                    argsData.Add("src", args[1]);
-                    return;
-                }
-
-                //s = source (dir), -de = dir encrypt
-                if (args[0].ToLower() == "s" && args[2].ToLower() == "-de")
-                {
-                    activeMode = CryptographyMode.DIRECTORY_ENCRYPT;
-                    argsData.Add("src", args[1]);
-                    return;
-                }
-
-                //s = source (dir), -se = dir decrypt
-                if (args[0].ToLower() == "s" && args[2].ToLower() == "-dd")
-                {
-                    activeMode = CryptographyMode.DIRECTORY_DECRYPT;
-                    argsData.Add("src", args[1]);
-                    return;
-                }
-
-                activeMode = CryptographyMode.EXCEPTION;
+                activeMode = Keywords.Exception;
             }
-            catch
+            catch (Exception exc)
             {
-                activeMode = CryptographyMode.EXCEPTION;
+                CLIPrinter.PrintError(exc.Message);
+                activeMode = Keywords.Exception;
             }
         }
 
         private void PrepareArgs()
         {
-            argsData = new Dictionary<string, string>();
-
-            string[] fetchedArgs = args;
-            args = fetchedArgs;
+            argumentsKeywordList = new Dictionary<string, Keywords>
+            {
+                { "-s", Keywords.Source },
+                { "-p", Keywords.Password },
+                { "-h", Keywords.Help },
+                { "-se", Keywords.SourceEncrypt },
+                { "-sd", Keywords.SourceDecrypt },
+                { "-de", Keywords.DirectoryEncrypt },
+                { "-dd", Keywords.DirectoryDecrypt },
+            };
 
             CheckArgs();
 
 #if DEBUG
-            CLIPrinter.Print(">>> TOTAL ARGS: " + args.Length);
-            for (int i = 0; i < args.Length; i++)
+            CLIPrinter.Print(">>> TOTAL ARGS: " + givenParameters.Length);
+            for (int i = 0; i < givenParameters.Length; i++)
             {
-                CLIPrinter.Print(string.Format(">>>> ARG {0}: {1}", i, args[i]));
+                CLIPrinter.Print(string.Format(">>>> ARG {0}: {1}", i, givenParameters[i]));
             }
             CLIPrinter.Print(">>>> ACTIVE MODE: " + activeMode.ToString());
 #endif
@@ -119,7 +122,7 @@ namespace YetAnotherCryptography.Desktop
 
         public CommandlineInputManager(string[] args)
         {
-            this.args = args;
+            givenParameters = args;
             PrepareArgs();
         }
     }
