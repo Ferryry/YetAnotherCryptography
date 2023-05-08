@@ -1,5 +1,4 @@
-﻿using System;
-using YetAnotherCryptography.DLL;
+﻿using YetAnotherCryptography.DLL;
 
 namespace YetAnotherCryptography
 {
@@ -19,6 +18,8 @@ namespace YetAnotherCryptography
 
             for (int i = 0; i < data.Length; i++)
             {
+                key = i % 2 == 0 ? key.Reverse().ToArray() : Hashing.GenerateHash(key);
+
                 result[i] = (byte)(data[i] ^ key[i % key.Length]);
             }
 
@@ -33,6 +34,8 @@ namespace YetAnotherCryptography
 
             for (int i = 0; i < data.Length; i++)
             {
+                key = i % 2 == 0 ? key.Reverse().ToArray() : Hashing.GenerateHash(key);
+
                 result[i] = (byte)(data[i] ^ key[i % key.Length]);
             }
 
