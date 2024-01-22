@@ -2,7 +2,7 @@
 
 namespace YetAnotherCryptography.Desktop
 {
-    public enum Keywords : int
+    public enum Keywords : uint
     {
         Source = 0,
         Password = 1,
@@ -11,12 +11,14 @@ namespace YetAnotherCryptography.Desktop
         DirectoryEncrypt = 4,
         DirectoryDecrypt = 5,
         Exception = 6,
-        Help = 7,
+        HashingAlgo = 7,
+        Help = 8,
     }
 
     class CommandlineInputManager
     {
         private string[] givenParameters;
+        private HashingAlgorithm algorithm;
         private Dictionary<string, Keywords> argumentsKeywordList;
         private Dictionary<string, string> filteredParameters;
         private Keywords activeMode;
@@ -102,6 +104,7 @@ namespace YetAnotherCryptography.Desktop
                 { "-s", Keywords.Source },
                 { "-p", Keywords.Password },
                 { "-h", Keywords.Help },
+                { "-h", Keywords.HashingAlgo },
                 { "-se", Keywords.SourceEncrypt },
                 { "-sd", Keywords.SourceDecrypt },
                 { "-de", Keywords.DirectoryEncrypt },
